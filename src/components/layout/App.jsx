@@ -105,7 +105,10 @@ class Board extends Component {
                 user
             });
             socket.emit('set id', user.id, function (res) {
-                if (!res.success) return;
+                if (!res.success) {
+                    localStorage.setItem('game_id', '');
+                    return localStorage.setItem('find_number_user', '');
+                }
                 if (game_id) {
                     socket.emit('fetch game data', game_id, function (res) {
                         if (res.success) {
@@ -217,6 +220,9 @@ class Board extends Component {
         if (this.state.game_ended || this.state.squares[i].selected) return;
         const number = this.state.squares[i].number;
         socket.emit('select number', {game_id: this.state.game_id, number: +number}, function (res) {
+            if (!res.success) {
+                window.alert(res.message)
+            }
         })
     }
 
@@ -396,7 +402,7 @@ class Board extends Component {
                 <div>
                     <div className="status">
                         <p>Game Id: {this.state.game_id}</p>
-                        <p>Số tiếp theo <strong>{this.state.currentNumber + 1}</strong> <button onClick={() => this.forceQuit()}>Quit thôi</button></p>
+                        <p>Số tiếp theo <strong>{this.state.currentNumber + 1}</strong> <button className='btn' onClick={() => this.forceQuit()}>Quit thôi</button></p>
                     </div>
                     <div className="board" style={this.state.gameStyle}>
                         {this.renderBoard()}

@@ -49,7 +49,7 @@ function socketHandler(socket) {
 
     socket.on('set id', async function (id, cb) {
         const user = await models.User.findById(id);
-        if (!user) return cb(makeErrorResponse(cb));
+        if (!user) return cb(makeErrorResponse('user dell tồn tại'));
         socket.user_id = id;
         return cb(makeSuccessResponse())
     });
