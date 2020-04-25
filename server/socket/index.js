@@ -55,7 +55,7 @@ function socketHandler(socket) {
     });
 
     socket.on('new game', async function (range, cb) {
-        if (!socket.user_id) return cb(makeErrorResponse());
+        if (!socket.user_id) return cb(makeErrorResponse('toang is real'));
         const user = await models.User.findById(socket.user_id);
         const newGame = await models.Game.create({
             range: +range,
@@ -75,7 +75,7 @@ function socketHandler(socket) {
     });
 
     socket.on('join game', async function (game_id, cb) {
-        if (!socket.user_id) return cb(makeErrorResponse());
+        if (!socket.user_id) return cb(makeErrorResponse('toang is real'));
         const user = await models.User.findById(socket.user_id);
         const existGame = await models.Game.findById(game_id);
         if (!existGame) return cb(makeErrorResponse('Game này dell tồn tại'));
