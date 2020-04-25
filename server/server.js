@@ -9,7 +9,8 @@ const {socketHandler} = require('./socket');
  * Get port from environment and store in Express.
  */
 
-app.set('port', 3500);
+const port = 3500;
+app.set('port', port);
 
 /**
  * Create HTTP server.
