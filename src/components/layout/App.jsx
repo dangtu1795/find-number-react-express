@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.scss'
 import socketIOClient from "socket.io-client";
-const socket = socketIOClient('http://server:3500');
+const socket = socketIOClient('http://number.signals.vn');
 
 function Square(props) {
     return (
@@ -265,7 +265,8 @@ class Board extends Component {
                     range: res.data.range,
                     currentNumber: res.data.currentNumber,
                     squares,
-                    game_ended: false
+                    game_ended: false,
+                    players: res.data.players,
                 });
                 setImmediate(() => self.checkGameEnded());
                 localStorage.setItem('game_id', res.data.id)
