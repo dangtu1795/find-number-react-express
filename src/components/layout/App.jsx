@@ -55,7 +55,17 @@ class Board extends Component {
         this.onSelectedNumber = this.onSelectedNumber.bind(this);
         this.userJoinRoom = this.userJoinRoom.bind(this);
         this.userLeaveRoom = this.userLeaveRoom.bind(this);
+        this.copyLink = this.copyLink.bind(this);
 
+    }
+
+    copyLink() {
+        const el = document.createElement('textarea');
+        el.value = 'http://number.signals.vn?game_id=' + this.state.game_id;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -85,6 +95,7 @@ class Board extends Component {
     }
 
     async connectServer() {
+        const queryString = window.location.search;
         const userData = localStorage.getItem('find_number_user');
         const game_id = localStorage.getItem('game_id');
         const self = this;
@@ -132,6 +143,10 @@ class Board extends Component {
                             setImmediate(() => self.checkGameEnded());
                         }
                     })
+                }
+                let idFromUrl = queryString && queryString.match(/.*?game_id=(\w+)/) && queryString.match(/.*?game_id=(\w+)/)[1];
+                if (idFromUrl) {
+                    self.joinGame(idFromUrl)
                 }
             });
         }
@@ -293,8 +308,8 @@ class Board extends Component {
         });
     }
 
-    joinGame() {
-        const game_id = this.inputGameId.current.value;
+    joinGame(idFromUrl) {
+        const game_id = idFromUrl || this.inputGameId.current.value;
         const self = this;
         socket.emit('join game', game_id, function (res) {
             if (res.success) {
@@ -400,9 +415,9 @@ class Board extends Component {
         else {
             return (
                 <div>
-                    <div className="status">
-                        <p>Game Id: {this.state.game_id}</p>
-                        <p>Số tiếp theo <strong>{this.state.currentNumber + 1}</strong> <button className='btn' onClick={() => this.forceQuit()}>Quit thôi</button></p>
+                    <div className="status header" id="header">
+                        <p>Game Id: {this.state.game_id} <button className="btn btn-success" onClick={() => this.copyLink()}>Copy</button></p>
+                        <p>Số tiếp theo <strong>{this.state.currentNumber + 1}</strong> <button className='btn btn-warning' onClick={() => this.forceQuit()}>Quit thôi</button></p>
                     </div>
                     <div className="board" style={this.state.gameStyle}>
                         {this.renderBoard()}
@@ -418,15 +433,29 @@ class App extends Component {
         super(props);
         this.state = { width: 0, height: 0 };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+        this.myFunction = this.myFunction.bind(this);
+    }
+
+    myFunction(header, sticky) {
+        if (window.pageYOffset > sticky) {
+            header.classList.add("sticky");
+        } else {
+            header.classList.remove("sticky");
+        }
     }
 
     componentDidMount() {
+        const self = this;
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
+        window.onscroll = function() {
+            self.myFunction(document.getElementById("header"), document.getElementById("header").offsetTop)
+        };
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateWindowDimensions);
+        window.removeEventListener('onscroll', this.myFunction);
     }
 
     updateWindowDimensions() {

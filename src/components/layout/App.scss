@@ -5,6 +5,12 @@
   ul {
     list-style: none;
   }
+  .sticky {
+    position: fixed;
+    top: -30px;
+    width: 100%;
+    background: lightgray;
+  }
   .status {
     text-align: center;
     margin: 30px auto;
