@@ -1,0 +1,31 @@
+.App {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  ul {
+    list-style: none;
+  }
+  .status {
+    text-align: center;
+    margin: 30px auto;
+  }
+  .board {
+    margin: 0 auto;
+    display: grid;
+    button.square {
+      text-align: center;
+      padding: 0;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      text-decoration: underline;
+    }
+    button.square:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    .selected {
+      background: pink;
+    }
+  }
+}

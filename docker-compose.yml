@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  server:
+    build: .
+    ports:
+      - "3500:3500"
+    networks:
+      b-back-tier:
+    depends_on:
+      - mongo
+
+  mongo:
+    image: "mongo:4.2"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=bk123456
+    networks:
+      b-back-tier:
+networks:
+  b-back-tier:
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.1.0/24"
+
